@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Barcode Scanner</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      background-color:rgb(197, 246, 206); /* light green */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+
+    header {
+      background-color: #333; /* dark gray */
+      color: white;
+      padding: 10px;
+      font-size: 1.6rem;
+      width: 100%;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    header:hover {
+      background-color: #444;
+    }
+
+    video {
+      width: 100%; /* full width */
+      max-width: 400px;
+      margin: 20px 0;
+      border: 2px solid #333;
+      border-radius: 10px;
+    }
+
+    .scan-btn {
+      padding: 10px 20px;
+      font-size: 1rem;
+      background-color: #2196f3; /* blue */
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .scan-btn:hover {
+      background-color: #0b7dda; /* darker blue */
+    }
+
+    .result {
+      margin-top: 20px;
+      font-size: 1.2rem;
+      color: #333; /* dark gray */
+    }
+  </style>
+</head>
+<body>
+  <header onclick="location.href='/settings.html'">← Scanner</header>
+
+  <h2>Scan your Barcode</h2>
+
+  <video id="camera" autoplay playsinline></video>
+
+  <button class="scan-btn" onclick="Scan Barcode()">Scan Barcode</button>
+
+  <div class="result" id="result">Waiting for scan...</div>
+
+  <script>
+    const video = document.getElementById('camera');
+
+    // This requests the users camera access
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
+      .then(stream => {
+        video.srcObject = stream;
+      })
+      .catch(err => {
+        document.getElementById("result").textContent = "Camera not accessible.";
+        console.error(err);
+      });
+
+    // I wrote this function to simulates a barcode scan and display the result USER-ABC123456
+
+    function simulateScan() {
+      const dummyCode = "USER-ABC123456";
+      document.getElementById("result").textContent = "Scanned: " + dummyCode;
+      
+      localStorage.setItem("lastScan", dummyCode);
+    }
+  </script>
+</body>
+</html>

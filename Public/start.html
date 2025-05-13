@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Start Race</title>
+  <style>
+    body {
+        margin: 0;
+        font-family: sans-serif;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        background-color: rgb(255, 255, 255); /* white */
+    }
+
+    header {
+        background-color: #333; /* dark gray */
+        color: white;
+        height: 100px;
+        padding: 10px;
+        font-size: 3rem;
+        text-align: center;
+        position: relative;
+        cursor: pointer;
+    }
+
+    header:hover {
+        background-color: #444; /* darker gray */
+    }
+
+    header .submit-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background-color: yellow;
+        color: black;
+        padding: 0.6rem 1rem;
+        font-size: 1.2rem;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .timer {
+        font-size: 3rem;
+        text-align: center;
+        margin: 20px 0;
+    }
+
+    .controls {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+        margin: 20px;
+        flex-wrap: wrap;
+    }
+
+    button {
+        padding: 0.8rem 1.5rem;
+        font-size: 1.2rem;
+        margin: 0 8px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .start-btn {
+        background-color: green;
+        color: white;
+    }
+
+    .record-btn {
+        background-color: #2196F3; /* blue */
+        color: white;
+    }
+
+    .stop-btn {
+        background-color: red;
+        color: white;
+    }
+
+    .reset-btn {
+        background-color: yellow;
+        color: black;
+    }
+
+    .back-btn {
+        background-color: gray;
+        color: white;
+        margin: 0 10px;
+    }
+
+    .finishers {
+        flex-grow: 1;
+        overflow-y: auto;
+        padding: 20px;
+        background: #f4f4f4;
+    }
+
+    .finisher {
+        margin: 5px 0;
+        font-size: 1.2rem;
+    }
+ </style>
+</head>
+<body>
+  <header id="backButtonHeader">Race Timer🕔</header> <!-- back button in the header -->
+  <div class="timer" id="timer">00:00:00:000</div> <!-- Timer display -->
+  <div class="controls">
+    <button class="start-btn" onclick="startRace()">Start Race</button> <!-- my Start button -->
+    <button class="record-btn" onclick="recordFinisher()">Record Finisher</button> <!-- the Record finisher button -->
+    <button id="stopBtn" class="record-btn" onclick="stopRace()" disabled>Stop Race</button> <!-- Stop button -->
+    <button id="submitBtn" class="record-btn" onclick="submitResults()" style="display: none;">Submit Results</button> <!-- Submit button -->
+  </div>
+  <div class="finishers" id="finishers"></div>
+
+  <script>
+    let startTime = null;
+    let timerInterval = null;
+    const finishers = [];
+
+    // this function is made to format the time in HH:MM:SS:MS
+    function formatTime(ms) {
+      const hours = String(Math.floor(ms / 3600000)).padStart(2, '0');
+      const minutes = String(Math.floor((ms % 3600000) / 60000)).padStart(2, '0');
+      const seconds = String(Math.floor((ms % 60000) / 1000)).padStart(2, '0');
+      const milliseconds = String(ms % 1000).padStart(3, '0');
+      return `${hours}:${minutes}:${seconds}:${milliseconds}`;
+    }
+
+    // Back button functionality
+    // If the user clicks the header, it will go back to the previous page
+    // If there is no previous page, it will redirect to the home page
+
+    document.getElementById('backButtonHeader').addEventListener('click', function() {
+      if (document.referrer) {
+        window.history.back();  // Go back to the previous page
+      } else {
+        window.location.href = '/';  // Redirect to home page (or fallback)
+      }
+    });
+
+    // Start, Stop, Record Finisher, and Submit Results functions
+    function startRace() {
+      if (startTime) return; // already started
+      startTime = Date.now();
+      timerInterval = setInterval(() => {
+        const now = Date.now();
+        const elapsed = now - startTime;
+        document.getElementById('timer').textContent = formatTime(elapsed);
+      }, 10); // Update every 10ms
+      document.getElementById('stopBtn').disabled = false; // Enable stop button when race starts
+    }
+
+    // Stops the race and shows the submit button
+    // Disables the stop button after I click it
+    function stopRace() {
+      clearInterval(timerInterval); // Stop the timer
+      document.getElementById('submitBtn').style.display = 'inline'; // Show the submit button
+      document.getElementById('stopBtn').disabled = true; // Disable stop button after stopping race
+    }
+
+    // Records Finishers
+    function recordFinisher() {
+      if (!startTime) {
+        alert("Start the race first!");
+        return;
+      }
+      const finishTime = Date.now() - startTime;
+      finishers.push(finishTime);
+      displayFinishers();
+    }
+
+    // Displays the finishers in the list
+    // It will creates a new div for each finisher and appends it to the finishers list
+    function displayFinishers() {
+      const list = document.getElementById('finishers');
+      list.innerHTML = '';
+      finishers.forEach((time, index) => {
+        const div = document.createElement('div');
+        div.className = 'finisher';
+        div.textContent = `Runner ${index + 1}: ${formatTime(time)}`;
+        list.appendChild(div);
+      });
+    }
+
+    // Submit results to the server
+    function submitResults() {
+      if (navigator.onLine) {
+        fetch('/upload', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({results : finishers})  // Just sending an array, not an object. might need to change this probs
+        })
+        .then(response => response.json())
+        .then(data => {
+          alert("Results submitted successfully!");
+          finishers.length = 0;
+          displayFinishers();
+        })
+        .catch(error => {
+          alert("Failed to submit results.");
+          console.error('Error:', error);
+        });
+      } else {
+        // If offline, store results in LocalStorage
+        localStorage.setItem('raceResults', JSON.stringify(finishers));
+        alert('Results saved locally (offline mode).');
+      }
+    }
+
+    // Sync results with the server when back online
+    window.addEventListener('online', syncOfflineResults);
+
+    function syncOfflineResults() {
+      const savedResults = localStorage.getItem('raceResults');
+      if (savedResults) {
+        const results = JSON.parse(savedResults);
+        fetch('/upload', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({results})  // Sync saved results to the server
+        })
+        .then(response => response.json())
+        .then(data => {
+          console.log("Offline results synced:", data);
+          localStorage.removeItem('raceResults');  // Clear saved results
+        })
+        .catch(err => console.error("Failed to sync results:", err));
+      }
+    }
+  </script>
+</body>
+</html>

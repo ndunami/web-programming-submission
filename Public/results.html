@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Race Results</title>
+  <style>
+    body {
+        margin: 0;
+        font-family: sans-serif;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        background-color:rgb(255, 255, 255);
+    }
+
+    header {
+        background-color: #333;
+        color: white;
+        height: 60px;
+        padding: 10px;
+        font-size: 3rem;
+        text-align: center;
+        position: relative;
+        cursor: pointer;
+    }
+
+    header:hover {
+        background-color: #444;
+    }
+
+    .results-container {
+        padding: 20px;
+        flex-grow: 1;
+        overflow-y: auto;
+    }
+
+    .button-container {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        margin-top: 10px;
+
+    }
+
+    button {
+        padding: 0.8rem 1.5rem;
+        font-size: 1.2rem;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .blue-btn {
+        background-color: #2196F3;
+        color: white;
+    }
+
+    .finishers {
+        background: #fff;
+        padding: 15px;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .finisher {
+        margin: 5px 0;
+        font-size: 1.2rem;
+        border-bottom: 1px solid #ddd;
+        padding: 8px 0;
+    }
+
+    .finisher:last-child {
+        border-bottom: none;
+    }
+  </style>
+</head>
+<body>
+  <header id="backButtonHeader" onclick="goBack()">Race Results</header>
+
+  <div class="button-container">
+    <button id="clearResultsBtn" class="blue-btn">Clear Results</button>
+    <button id="downloadCsvBtn" class="blue-btn">Download CSV</button>
+  </div>
+
+  <div id="results" class="results-container"></div>
+
+  <script>
+    // Function for going back to the race timer screen
+    function goBack() {
+      window.location.href = '/'; // Redirects to the home page or race timer page
+    }
+
+    // Fetch and display race results
+    function loadResults() {
+      fetch('/api/results')
+        .then(res => res.json())
+        .then(data => {
+          const container = document.getElementById('results');
+          container.innerHTML = ''; // Clear old entries
+          if (data.length === 0) {
+            container.innerHTML = '<p>No results yet.</p>';
+            return;
+          }
+          data.forEach(runner => {
+            const div = document.createElement('div');
+            div.className = 'runner';
+            div.textContent = `Runner ${runner.runner_id}: ${formatTime(runner.finish_time)}`;
+            container.appendChild(div);
+          });
+        })
+        .catch(err => {
+          console.error('Error loading results:', err);
+          document.getElementById('results').innerHTML = '<p>Error loading results.</p>';
+        });
+    }
+
+    // Format time from ms to HH:MM:SS:SSS
+    function formatTime(ms) {
+      const hours = String(Math.floor(ms / 3600000)).padStart(2, '0');
+      const minutes = String(Math.floor((ms % 3600000) / 60000)).padStart(2, '0');
+      const seconds = String(Math.floor((ms % 60000) / 1000)).padStart(2, '0');
+      const milliseconds = String(ms % 1000).padStart(3, '0');
+      return `${hours}:${minutes}:${seconds}:${milliseconds}`;
+    }
+
+    // Clear results when button is clicked
+    document.getElementById('clearResultsBtn').addEventListener('click', () => {
+      fetch('/api/results', { method: 'DELETE' })
+        .then(res => res.json())
+        .then(data => {
+          console.log(data.message);
+          loadResults(); // Refresh the results on the page
+        })
+        .catch(err => {
+          console.error('Error clearing results:', err);
+        });
+    });
+    
+    // Download CSV when button is clicked
+    document.getElementById('downloadCsvBtn').addEventListener('click', () => {
+      fetch('/api/results')
+        .then(res => res.json())
+        .then(data => {
+          if (data.length === 0) {
+            alert("No results to download.");
+            return;
+          }
+
+          // Build CSV content
+          let csvContent = 'Runner ID,Finish Time (ms),Formatted Time\n';
+          data.forEach(runner => {
+            const formatted = formatTime(runner.finish_time);
+            csvContent += `${runner.runner_id},${runner.finish_time},${formatted}\n`;
+          });
+
+          // Create blob and trigger download
+          const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'race_results.csv';
+          a.click();
+          URL.revokeObjectURL(url); // Clean up
+        })
+        .catch(err => {
+          console.error('Error generating CSV:', err);
+          alert("Failed to generate CSV.");
+        });
+    });
+
+    // Load results on page load
+    loadResults();
+  </script>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Race Timer App</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: sans-serif;
+    }
+
+    header {
+      position: relative;
+      height: 100px;
+      background: #333;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+    }
+
+    .header-title {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .settings-button {
+      position: absolute;
+      right: 20px;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 2rem;
+      cursor: pointer;
+    }
+
+
+    .container {
+      height: calc(100% - 100px);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .half {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 2rem;
+      color: white;
+      text-align: center;
+      user-select: none;
+    }
+
+    .start {
+      background-color: #4CAF50; /* green */
+    }
+
+    .results {
+      background-color: #2196F3; /* blue */
+    }
+
+    .half:active {
+      opacity: 0.85;
+    }
+  </style>
+</head>
+<body>
+  <header>
+  <div class="header-title">MOBIDASH!</div>
+  <button id="settingsBtn" class="settings-button">⚙️</button>
+</header>
+  <div class="container">
+    <div class="half start" onclick="location.href='/start'">Start Race</div>
+    <div class="half results" onclick="location.href='/results'">View Results</div>
+  </div>
+  <script>
+    document.getElementById('settingsBtn').addEventListener('click', () => {
+      window.location.href = 'settings.html';
+    });
+  </script>
+</body>
+</html>

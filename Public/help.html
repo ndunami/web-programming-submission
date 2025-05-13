@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Help</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      background-color: #f0f8ff;
+      padding: 20px;
+    }
+
+    header {
+      background-color: #333;
+      color: white;
+      padding: 10px;
+      font-size: 1.6rem;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    header:hover {
+      background-color: #444;
+    }
+
+    h2 {
+      margin-top: 20px;
+      color: #333;
+    }
+
+    ul {
+      list-style-type: disc;
+      padding-left: 20px;
+    }
+
+    li {
+      margin-bottom: 10px;
+      font-size: 1rem;
+    }
+
+    .section {
+      margin-bottom: 25px;
+    }
+  </style>
+</head>
+<body>
+  <header onclick="goBackToSettings()">Help & Guide</header>
+
+  <div class="section">
+    <h2>Main Menu</h2>
+    <ul>
+      <li><strong>Start Race</strong> – Starts the race timer. Tap this when a new lap begins.</li>
+      <li><strong>View Results</strong> – Opens a list of all recorded lap times. You can clear results or download them as CSV from here.</li>
+      <li><strong>⚙️ Settings</strong> – Opens the settings/more features page.</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>Race Timer Page</h2>
+    <ul>
+      <li><strong>Tap to Record</strong> – Tap the screen each time a runner completes a lap to record their time.</li>
+      <li><strong>Stop Timer</strong> – Stops the race timer. This must be pressed before results can be submitted.</li>
+      <li><strong>Submit Results</strong> – Saves the race results after the timer is stopped.</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>Results Page</h2>
+    <ul>
+      <li><strong>Clear Results</strong> – Erases all stored lap times.</li>
+      <li><strong>Download CSV</strong> – Downloads the race results as a CSV file.</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>Settings Page</h2>
+    <ul>
+      <li><strong>Scan your barcode</strong> – opens a barcode scanning feature.</li>
+      <li><strong>Emergency help!</strong> – dials 999 in case of a health emergency.</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>Need more help?</h2>
+    <ul>
+      <li>Restart the app if something doesn't work.</li>
+      <li>All actions are designed to be tap-friendly and fast in offline conditions.</li>
+    </ul>
+  </div>
+</body>
+<script>
+  function goBackToSettings() {
+    window.location.href = "/settings.html";
+  }
+</script>
+</html>
