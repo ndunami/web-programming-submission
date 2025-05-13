@@ -41,17 +41,22 @@ app for simplicity.
 ## AI
 My Summary
 
-the AI I used(ChatGPT) was used extensively for guidance, correcting syntax, code generation, troubleshooting, and refining UI/UX. I relied on it to help clarify ideas,
- debug issues, and polish features I had implemented or designed. It helped me speed up repetitive tasks and provided helpful alternatives when 
-I was stuck on what direction to take my app. 
+the AI I used(ChatGPT) was used extensively for guidance, correcting syntax, code generation, troubleshooting, and refining UI/UX. I relied on it to help clarify ideas, debug issues, and polish features I had implemented or designed. It helped me speed up repetitive tasks and provided helpful alternatives when 
+I was stuck on what direction to take my app. A big example of this would be my use of AI during the creation of a barcode scan feature. The majority of
+app features were mostly made without much help from AI but the barcode scan feature included heavy use of AI to create, as I had no Idea on where to start
+and some polishing from me to make it work as intended after the initial guide.
 
 ##Prompts for trouble shooting:
  - Help, my app wont open any pages when running on ports 8080, whats going on?
  - The app only works on port 3000 and breaks on 8080. how do I fix this?
  - how do I kill apps or open space to apps using port 8080?
 
-##Promps for the 
-
+##Promps for the features (BARCODE SCANNER)
+ - how would you make a barcode scanner in a web app
+ - hoe do you connect it to a camera in a mobile device?
+ - Help me design a barcode scanner feature for my web app.
+ - How do I make this request to use the user camera
+   
 ##Prompts used to debug or polish features:
  - This is the code ive written. explain why my back button isnt working in this HTML page? Highlight the syntax errors or missing lines of code.
  - Can you go over my code and help me remove syntax errors and repetetive code.
@@ -79,7 +84,7 @@ I had written more that once or could reuse elsewhere
 
 #Improvements since Prototype:
 
-Since the prototype, I’ve significantly improved the design, added a proper results view, enhanced navigation, and implemented export/download features. I’ve also cleaned up layout 
+Since the prototype, I’ve significantly improved the design, added a proper results view, enhanced navigation, and implemented export/download and barcode scan features. I’ve also cleaned up layout 
 consistency across all screens, improved accessibility by using large clear buttons, and ensured everything works offline in airplane mode, letting the user send the file in a batch
  when reconected online and download CVS files.
 
@@ -88,3 +93,12 @@ consistency across all screens, improved accessibility by using large clear butt
 This project was a major learning opportunity in building a full app without any external libraries. It forced me to rely on native JavaScript, 
 the DOM API, and CSS alone. Using AI helped me get over roadblocks, but I still wrote, understood, and controlled every part of the implementation. 
 From designing the UI, structuring the HTML/CSS, implementing logic in JS, and debugging the backend, I now feel more confident building standalone web apps in raw JavaScript.
+
+##References:
+
+Volunteer - Parkrun app
+The design and core functionality of this application were heavily inspired by the Volunteer - Parkrun app. Its intuitive layout and simplicity influenced the structure of the timer, results, and barcode scanning pages.
+
+YouTube Video: Live Demonstration of Bar Code Reader in Java using iText.jar API | Practice Project | ‪@TechRanch – YouTube
+Link: https://www.youtube.com/watch?app=desktop&v=Ll1HPZMjt1s
+This video guided my early understanding of how I could structure the barcode scanning feature and inspired some of the logic used to the code. but no code was coppied.
